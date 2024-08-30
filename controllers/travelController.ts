@@ -18,7 +18,8 @@ export const createTravel = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const { title, imageUrl, description } = req.body;
+  const { title, description } = req.body;
+  const imageUrl = req.file?.path;
   try {
     const newRoute = new TravelRoute({ title, imageUrl, description });
     await newRoute.save();
