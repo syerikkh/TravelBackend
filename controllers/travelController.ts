@@ -7,9 +7,9 @@ export const getTravel = async (
 ) => {
   try {
     const routes = await TravelRoute.find();
-    res.json(routes);
+    return res.json(routes);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch travel routes" });
+    return res.status(500).json({ message: "Failed to fetch travel routes" });
   }
 };
 
@@ -19,11 +19,16 @@ export const createTravel = async (
   res: express.Response
 ) => {
   const { title, description } = req.body;
-  const imageUrl = req.file?.path;
+  const image = req.file?.path;
   try {
-    const newRoute = new TravelRoute({ title, imageUrl, description });
+    const newRoute = new TravelRoute({
+      title,
+      image,
+      description,
+    });
     await newRoute.save();
     res.status(201).json(newRoute);
+    console.log("Successfully created a travel");
   } catch (error) {
     res.status(500).json({ message: "Failed to create travel route" });
   }

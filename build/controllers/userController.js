@@ -17,16 +17,21 @@ const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password } = req.body;
+    const { name, email, password, isAdmin } = req.body;
     try {
         const existingUser = yield userModel_1.User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        const newUser = new userModel_1.User({ name, email, password: hashedPassword });
+        const newUser = new userModel_1.User({
+            name,
+            email,
+            password: hashedPassword,
+            isAdmin,
+        });
         yield newUser.save();
-        const token = jsonwebtoken_1.default.sign({ userId: newUser._id }, "tokensecret", {
+        const token = jsonwebtoken_1.default.sign({ userId: newUser._id, isAdmin: newUser.isAdmin }, "tokensecret", {
             expiresIn: "1h",
         });
         res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
@@ -48,7 +53,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password" });
         }
-        const token = jsonwebtoken_1.default.sign({ userId: user._id }, "tokensecret", {
+        const token = jsonwebtoken_1.default.sign({ userId: user._id, isAdmin: user.isAdmin }, "tokensecret", {
             expiresIn: "1h",
         });
         res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });

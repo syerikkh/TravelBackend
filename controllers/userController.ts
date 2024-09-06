@@ -4,7 +4,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req: express.Request, res: express.Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, isAdmin } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -12,12 +12,21 @@ export const signup = async (req: express.Request, res: express.Response) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      isAdmin,
+    });
     await newUser.save();
 
-    const token = jwt.sign({ userId: newUser._id }, "tokensecret", {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: newUser._id, isAdmin: newUser.isAdmin },
+      "tokensecret",
+      {
+        expiresIn: "1h",
+      }
+    );
     res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
 
     return res.status(201).json({ message: "Successfully created a user" });
@@ -39,9 +48,13 @@ export const login = async (req: express.Request, res: express.Response) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Incorrect password" });
     }
-    const token = jwt.sign({ userId: user._id }, "tokensecret", {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      "tokensecret",
+      {
+        expiresIn: "1h",
+      }
+    );
     res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
 
     return res

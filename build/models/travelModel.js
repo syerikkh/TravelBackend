@@ -8,6 +8,6 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const travelRouteSchema = new mongoose_1.default.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    imageUrl: { type: String, required: true },
+    image: { type: String, required: true },
 });
 exports.TravelRoute = mongoose_1.default.model("TravelRoute", travelRouteSchema);
