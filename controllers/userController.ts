@@ -64,3 +64,12 @@ export const login = async (req: express.Request, res: express.Response) => {
     res.status(500).json({ message: "Failed to log in" });
   }
 };
+
+export const getUsers = async (req: express.Request, res: express.Response) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};

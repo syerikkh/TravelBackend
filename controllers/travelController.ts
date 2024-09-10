@@ -1,5 +1,6 @@
 import { TravelRoute } from "../models/travelModel";
 import express from "express";
+import cloudinary from "../utils/cloudinary";
 
 export const getTravel = async (
   req: express.Request,
@@ -19,11 +20,17 @@ export const createTravel = async (
   res: express.Response
 ) => {
   const { title, description } = req.body;
-  const image = req.file?.path;
+  const image = req.file;
+
+  if (!image) {
+    return res.status(400).json({ message: "Image is required" });
+  }
+
   try {
+    const result = await cloudinary.uploader.upload(image.path);
     const newRoute = new TravelRoute({
       title,
-      image,
+      image: result.secure_url,
       description,
     });
     await newRoute.save();
