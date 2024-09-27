@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTravel = exports.getTravel = void 0;
 const travelModel_1 = require("../models/travelModel");
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const getTravel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const routes = yield travelModel_1.TravelRoute.find();
@@ -23,13 +27,16 @@ const getTravel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getTravel = getTravel;
 // Create a new travel route
 const createTravel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const { title, description } = req.body;
-    const image = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    const image = req.file;
+    if (!image) {
+        return res.status(400).json({ message: "Image is required" });
+    }
     try {
+        const result = yield cloudinary_1.default.uploader.upload(image.path);
         const newRoute = new travelModel_1.TravelRoute({
             title,
-            image,
+            image: result.secure_url,
             description,
         });
         yield newRoute.save();

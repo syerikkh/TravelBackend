@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.signup = void 0;
+exports.getUsers = exports.login = exports.signup = void 0;
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -59,10 +59,22 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
         return res
             .status(200)
-            .json({ message: `Successfully logged in ${user.name}` });
+            .json({
+            message: `Successfully logged in ${user.name}, token is ${token}`,
+        });
     }
     catch (error) {
         res.status(500).json({ message: "Failed to log in" });
     }
 });
 exports.login = login;
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield userModel_1.User.find();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to fetch users" });
+    }
+});
+exports.getUsers = getUsers;

@@ -1,13 +1,10 @@
 import jwt from "jsonwebtoken";
 import express from "express";
 
-interface AuthenticatedRequest extends express.Request {
+export interface AuthenticatedRequest extends express.Request {
   user?: {
     _id: string;
     isAdmin: boolean;
-    name: string;
-    email: string;
-    password: string;
   };
 }
 
@@ -26,8 +23,12 @@ export const requireAuth = (
       console.log("Token verification failed:", err);
       return res.status(401).json({ error: "Invalid token" });
     }
-    console.log("tokenhaa", decodedToken);
-    req.user = decodedToken;
+    console.log("decodedToken", decodedToken);
+    req.user = {
+      _id: decodedToken.userId,
+      isAdmin: decodedToken.isAdmin,
+    };
+    console.log("Token decoded successfully:", req.user);
     next();
   });
 };
@@ -37,9 +38,10 @@ export const requireAdmin = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const { isAdmin } = req.user || {};
-  if (!isAdmin) {
+  if (!req.user?.isAdmin) {
     return res.status(403).json({ message: "Access denied, admin only" });
   }
+
+  console.log("Admin access granted");
   next();
 };
