@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsers = exports.login = exports.signup = void 0;
+exports.getUser = exports.getUsers = exports.login = exports.signup = void 0;
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -57,10 +57,14 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             expiresIn: "1h",
         });
         res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
-        return res
-            .status(200)
-            .json({
-            message: `Successfully logged in ${user.name}, token is ${token}`,
+        return res.status(200).json({
+            message: `Successfully logged in ${user.name}`,
+            token,
+            user: {
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin,
+            },
         });
     }
     catch (error) {
@@ -78,3 +82,23 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUsers = getUsers;
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Ensure req.user exists and has an _id
+        if (!req.user || !req.user._id) {
+            return res.status(400).json({ message: "User not authenticated" });
+        }
+        // Find the user by their ID
+        const user = yield userModel_1.User.findById(req.user._id);
+        // If user is null, return error
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        // Return the found user
+        return res.status(200).json({ user });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Failed to fetch user", error });
+    }
+});
+exports.getUser = getUser;

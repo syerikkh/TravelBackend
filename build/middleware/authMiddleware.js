@@ -17,17 +17,21 @@ const requireAuth = (req, res, next) => {
             return res.status(401).json({ error: "Invalid token" });
         }
         console.log("decodedToken", decodedToken);
-        req.user = decodedToken;
+        req.user = {
+            _id: decodedToken.userId,
+            isAdmin: decodedToken.isAdmin,
+        };
+        console.log("Token decoded successfully:", req.user);
         next();
     });
 };
 exports.requireAuth = requireAuth;
 const requireAdmin = (req, res, next) => {
-    const { isAdmin } = req.user || {};
-    if (!isAdmin) {
+    var _a;
+    if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.isAdmin)) {
         return res.status(403).json({ message: "Access denied, admin only" });
     }
-    console.log("this is admin");
+    console.log("Admin access granted");
     next();
 };
 exports.requireAdmin = requireAdmin;

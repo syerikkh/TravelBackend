@@ -59,11 +59,22 @@ export const login = async (req: express.Request, res: express.Response) => {
     res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
 
     return res.status(200).json({
-      message: `Successfully logged in ${user.name}, token is ${token}`,
+      message: `Successfully logged in ${user.name}`,
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to log in" });
   }
+};
+
+export const signout = (req: express.Request, res: express.Response) => {
+  res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+  res.status(200).json({ message: "Signed out successfull" });
 };
 
 export const getUsers = async (req: express.Request, res: express.Response) => {

@@ -13,3 +13,4 @@ exports.router.post("/signup", userController_1.signup);
 exports.router.post("/login", userController_1.login);
 exports.router.get("/users", userController_1.getUsers);
 exports.router.get("/adminDashboard", authMiddleware_1.requireAuth, authMiddleware_1.requireAdmin, userController_1.getUsers);
+exports.router.get("/user", authMiddleware_1.requireAuth, userController_1.getUser);
