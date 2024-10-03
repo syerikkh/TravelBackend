@@ -5,6 +5,8 @@ import {
   getUsers,
   getUser,
   signout,
+  addTravelRouteToCart,
+  getCart,
 } from "../controllers/userController";
 import { requireAdmin, requireAuth } from "../middleware/authMiddleware";
 
@@ -17,5 +19,7 @@ router.post("/signout", signout);
 router.get("/users", getUsers);
 router.get("/adminDashboard", requireAuth, requireAdmin, getUsers);
 router.get("/user", requireAuth, getUser);
+router.post("/user/addTravelRoute", requireAuth, addTravelRouteToCart);
+router.get("/user/cart", requireAuth, getCart);
 
 export { router as userRoutes };

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.getUsers = exports.login = exports.signup = void 0;
+exports.getUser = exports.getUsers = exports.signout = exports.login = exports.signup = void 0;
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -72,6 +72,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.login = login;
+const signout = (req, res) => {
+    res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+    res.status(200).json({ message: "Signed out successfull" });
+};
+exports.signout = signout;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield userModel_1.User.find();

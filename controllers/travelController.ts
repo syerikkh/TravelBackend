@@ -19,7 +19,7 @@ export const createTravel = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const { title, description } = req.body;
+  const { title, description, price } = req.body;
   const image = req.file;
 
   if (!image) {
@@ -32,6 +32,7 @@ export const createTravel = async (
       title,
       image: result.secure_url,
       description,
+      price,
     });
     await newRoute.save();
     res.status(201).json(newRoute);
