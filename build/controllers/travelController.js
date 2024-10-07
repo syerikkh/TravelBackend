@@ -27,7 +27,7 @@ const getTravel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getTravel = getTravel;
 // Create a new travel route
 const createTravel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, description } = req.body;
+    const { title, description, price } = req.body;
     const image = req.file;
     if (!image) {
         return res.status(400).json({ message: "Image is required" });
@@ -38,6 +38,7 @@ const createTravel = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             title,
             image: result.secure_url,
             description,
+            price,
         });
         yield newRoute.save();
         res.status(201).json(newRoute);

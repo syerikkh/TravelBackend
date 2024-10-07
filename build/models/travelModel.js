@@ -9,5 +9,6 @@ const travelRouteSchema = new mongoose_1.default.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     image: { type: String, required: true },
+    price: { type: Number, required: true },
 });
 exports.TravelRoute = mongoose_1.default.model("TravelRoute", travelRouteSchema);

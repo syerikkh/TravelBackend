@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.getUsers = exports.signout = exports.login = exports.signup = void 0;
+exports.getCart = exports.addTravelRouteToCart = exports.getUser = exports.getUsers = exports.signout = exports.login = exports.signup = void 0;
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const travelModel_1 = require("../models/travelModel");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, isAdmin } = req.body;
     try {
@@ -107,3 +108,38 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
+const addTravelRouteToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { travelRouteId } = req.body;
+    try {
+        const travelRoute = yield travelModel_1.TravelRoute.findById(travelRouteId);
+        if (!travelRoute) {
+            return res.status(404).json({ message: "Travel not found" });
+        }
+        const user = yield userModel_1.User.findById((_a = req.user) === null || _a === void 0 ? void 0 : _a._id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        user.cart.push(travelRoute._id);
+        yield user.save();
+        return res.status(200).json({ message: "Travel added to cart", user });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Failed to add travel", error });
+    }
+});
+exports.addTravelRouteToCart = addTravelRouteToCart;
+const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const user = yield userModel_1.User.findById((_a = req.user) === null || _a === void 0 ? void 0 : _a._id).populate("cart");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json({ cart: user.cart });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Failed to fetch cart", error });
+    }
+});
+exports.getCart = getCart;

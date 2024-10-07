@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import express from "express";
 import jwt from "jsonwebtoken";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
-import { TravelRoute } from "../models/travelModel";
+import { Travel } from "../models/travelModel";
 
 export const signup = async (req: express.Request, res: express.Response) => {
   const { name, email, password, isAdmin } = req.body;
@@ -92,20 +92,16 @@ export const getUser = async (
   res: express.Response
 ) => {
   try {
-    // Ensure req.user exists and has an _id
     if (!req.user || !req.user._id) {
       return res.status(400).json({ message: "User not authenticated" });
     }
 
-    // Find the user by their ID
     const user = await User.findById(req.user._id);
 
-    // If user is null, return error
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the found user
     return res.status(200).json({ user });
   } catch (error) {
     return res.status(500).json({ message: "Failed to fetch user", error });
@@ -118,7 +114,7 @@ export const addTravelRouteToCart = async (
 ) => {
   const { travelRouteId } = req.body;
   try {
-    const travelRoute = await TravelRoute.findById(travelRouteId);
+    const travelRoute = await Travel.findById(travelRouteId);
     if (!travelRoute) {
       return res.status(404).json({ message: "Travel not found" });
     }
@@ -135,6 +131,25 @@ export const addTravelRouteToCart = async (
   }
 };
 
+export const deleteTravelFromCart = async (
+  req: AuthenticatedRequest,
+  res: express.Response
+) => {
+  const { travelRouteId } = req.body;
+  try {
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.cart = user.cart.filter(
+      (routeId) => routeId.toString() !== travelRouteId
+    );
+    await user.save();
+    return res.status(200).json({ message: "Travel removed from cart", user });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to remove travel", error });
+  }
+};
 export const getCart = async (
   req: AuthenticatedRequest,
   res: express.Response

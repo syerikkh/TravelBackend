@@ -10,5 +10,6 @@ const userSchema = new mongoose_1.default.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
+    cart: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "TravelRoute" }],
 });
 exports.User = mongoose_1.default.model("User", userSchema);

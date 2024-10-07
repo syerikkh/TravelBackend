@@ -15,3 +15,5 @@ exports.router.post("/signout", userController_1.signout);
 exports.router.get("/users", userController_1.getUsers);
 exports.router.get("/adminDashboard", authMiddleware_1.requireAuth, authMiddleware_1.requireAdmin, userController_1.getUsers);
 exports.router.get("/user", authMiddleware_1.requireAuth, userController_1.getUser);
+exports.router.post("/user/addTravelRoute", authMiddleware_1.requireAuth, userController_1.addTravelRouteToCart);
+exports.router.get("/user/cart", authMiddleware_1.requireAuth, userController_1.getCart);
