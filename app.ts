@@ -9,7 +9,9 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: "travel-phi-bice.vercel.app", credentials: true }));
+app.use(
+  cors({ origin: "http://travel-phi-bice.vercel.app", credentials: true })
+);
 
 const PORT = 8000;
 
