@@ -17,6 +17,7 @@ const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const travelModel_1 = require("../models/travelModel");
+const jwtSecret = process.env.JWT_SECRET || "secret";
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, isAdmin } = req.body;
     try {
@@ -32,10 +33,15 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             isAdmin,
         });
         yield newUser.save();
-        const token = jsonwebtoken_1.default.sign({ userId: newUser._id, isAdmin: newUser.isAdmin }, "tokensecret", {
+        const token = jsonwebtoken_1.default.sign({ userId: newUser._id, isAdmin: newUser.isAdmin }, jwtSecret, {
             expiresIn: "1h",
         });
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60,
+            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+        });
         return res.status(201).json({ message: "Successfully created a user" });
     }
     catch (error) {
@@ -54,10 +60,15 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password" });
         }
-        const token = jsonwebtoken_1.default.sign({ userId: user._id, isAdmin: user.isAdmin }, "tokensecret", {
+        const token = jsonwebtoken_1.default.sign({ userId: user._id, isAdmin: user.isAdmin }, jwtSecret, {
             expiresIn: "1h",
         });
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60,
+            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+        });
         return res.status(200).json({
             message: `Successfully logged in ${user.name}`,
             token,
@@ -74,7 +85,12 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.login = login;
 const signout = (req, res) => {
-    res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+    res.cookie("jwt", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+    });
     res.status(200).json({ message: "Signed out successfull" });
 };
 exports.signout = signout;
