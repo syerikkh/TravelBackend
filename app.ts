@@ -14,14 +14,13 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 const PORT = 8000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 connectToDb();
 
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
-
-app.use(cookieParser());
 app.use("/", userRoutes);
 app.use("/", travelRoutes);
 
