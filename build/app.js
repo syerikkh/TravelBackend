@@ -10,6 +10,7 @@ const userRoutes_1 = require("./routes/userRoutes");
 const travelRoutes_1 = require("./routes/travelRoutes");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const paymentRoutes_1 = require("./routes/paymentRoutes");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 app.use((0, cookie_parser_1.default)());
 app.use("/", userRoutes_1.userRoutes);
 app.use("/", travelRoutes_1.travelRoutes);
+app.use("/", paymentRoutes_1.paymentRoutes);
 app.listen(PORT, () => {
     console.log("Application is running at: http://localhost:" + PORT);
 });

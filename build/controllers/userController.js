@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCart = exports.addTravelRouteToCart = exports.getUser = exports.getUsers = exports.signout = exports.login = exports.signup = void 0;
+exports.getCart = exports.deleteTravelFromCart = exports.addTravelRouteToCart = exports.getUser = exports.getUsers = exports.signout = exports.login = exports.signup = void 0;
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -90,17 +90,13 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUsers = getUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Ensure req.user exists and has an _id
         if (!req.user || !req.user._id) {
             return res.status(400).json({ message: "User not authenticated" });
         }
-        // Find the user by their ID
         const user = yield userModel_1.User.findById(req.user._id);
-        // If user is null, return error
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        // Return the found user
         return res.status(200).json({ user });
     }
     catch (error) {
@@ -112,7 +108,7 @@ const addTravelRouteToCart = (req, res) => __awaiter(void 0, void 0, void 0, fun
     var _a;
     const { travelRouteId } = req.body;
     try {
-        const travelRoute = yield travelModel_1.TravelRoute.findById(travelRouteId);
+        const travelRoute = yield travelModel_1.Travel.findById(travelRouteId);
         if (!travelRoute) {
             return res.status(404).json({ message: "Travel not found" });
         }
@@ -129,6 +125,23 @@ const addTravelRouteToCart = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.addTravelRouteToCart = addTravelRouteToCart;
+const deleteTravelFromCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { travelRouteId } = req.body;
+    try {
+        const user = yield userModel_1.User.findById((_a = req.user) === null || _a === void 0 ? void 0 : _a._id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        user.cart = user.cart.filter((routeId) => routeId.toString() !== travelRouteId);
+        yield user.save();
+        return res.status(200).json({ message: "Travel removed from cart", user });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Failed to remove travel", error });
+    }
+});
+exports.deleteTravelFromCart = deleteTravelFromCart;
 const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {

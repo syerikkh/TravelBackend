@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 app.use(cookieParser());
 app.use("/", userRoutes);
 app.use("/", travelRoutes);
+
 app.listen(PORT, () => {
   console.log("Application is running at: http://localhost:" + PORT);
 });

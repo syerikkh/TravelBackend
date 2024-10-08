@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
   cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Travel" }],
+  payment: [{ type: mongoose.Types.ObjectId, ref: "Payment" }],
 });
 
 export const User = mongoose.model("User", userSchema);

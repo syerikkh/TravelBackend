@@ -11,3 +11,5 @@ exports.router = express_1.default.Router();
 exports.travelRoutes = exports.router;
 exports.router.post("/createTravel", multer_1.default.single("image"), travelController_1.createTravel);
 exports.router.get("/travels", travelController_1.getTravel);
+exports.router.get("/getTravelWithLimit", travelController_1.getTravelWithLimit);
+exports.router.get("/travel/:id", travelController_1.getOneTravel);
