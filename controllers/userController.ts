@@ -29,7 +29,11 @@ export const signup = async (req: express.Request, res: express.Response) => {
         expiresIn: "1h",
       }
     );
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60,
+      sameSite: "none",
+    });
 
     return res.status(201).json({ message: "Successfully created a user" });
   } catch (error) {
@@ -81,7 +85,11 @@ export const login = async (req: express.Request, res: express.Response) => {
 };
 
 export const signout = (req: express.Request, res: express.Response) => {
-  res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    sameSite: "none",
+  });
   res.status(200).json({ message: "Signed out successfull" });
 };
 
