@@ -8,6 +8,8 @@ export interface AuthenticatedRequest extends express.Request {
   };
 }
 
+const jwtSecret = process.env.JWT_SECRET || "secret";
+
 export const requireAuth = (
   req: AuthenticatedRequest,
   res: express.Response,
@@ -18,7 +20,7 @@ export const requireAuth = (
     console.log("No token found in cookies");
     return res.status(401).json({ message: "Authentication required" });
   }
-  jwt.verify(token, "tokensecret", (err: any, decodedToken: any) => {
+  jwt.verify(token, jwtSecret, (err: any, decodedToken: any) => {
     if (err) {
       console.log("Token verification failed:", err);
       return res.status(401).json({ error: "Invalid token" });
