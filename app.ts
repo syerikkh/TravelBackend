@@ -13,19 +13,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://travel-phi-bice.vercel.app",
 ];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 const PORT = 8000;
 
