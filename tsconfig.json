@@ -103,7 +103,17 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "types": [
+      "node",
+      "express",
+      "cors",
+      "cookie-parser",
+      "bcrypt",
+      "jsonwebtoken",
+      "multer"
+    ],
+    "typeRoots": ["./node_modules/@types"]
   },
   "exclude": ["node_modules"]
 }
