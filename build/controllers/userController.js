@@ -40,7 +40,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             maxAge: 1000 * 60 * 60,
             sameSite: "none",
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
         });
         return res.status(201).json({ message: "Successfully created a user" });
     }
@@ -67,7 +67,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             maxAge: 1000 * 60 * 60,
             sameSite: "none",
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
         });
         return res.status(200).json({
             message: `Successfully logged in ${user.name}`,
@@ -89,7 +89,7 @@ const signout = (req, res) => {
         httpOnly: true,
         expires: new Date(0),
         sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
     });
     res.status(200).json({ message: "Signed out successfull" });
 };

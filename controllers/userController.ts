@@ -35,7 +35,7 @@ export const signup = async (req: express.Request, res: express.Response) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60,
       sameSite: "none",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
     });
 
     return res.status(201).json({ message: "Successfully created a user" });
@@ -71,7 +71,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60,
       sameSite: "none",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
     });
 
     return res.status(200).json({
@@ -93,7 +93,7 @@ export const signout = (req: express.Request, res: express.Response) => {
     httpOnly: true,
     expires: new Date(0),
     sameSite: "none",
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
   });
   res.status(200).json({ message: "Signed out successfull" });
 };
